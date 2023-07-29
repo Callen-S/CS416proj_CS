@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>D3.js Bar Graph</title>
+    <script src="https://d3js.org/d3.v7.js"></script>
+</head>
+<p>This is a narative visualtaion about who wins college football championships and why your team won't win one please click through the visulzation!</p>
+<button id="nextButton">Next</button>
+
+<body>
+<div id="chart-container"></div>
+
+<script>
+    const svgWidth = 1500;
+    const svgHeight = 400;
+    const margin = { top: 20, right: 150, bottom: 100, left: 60 };
+
+    const width = svgWidth - margin.left - margin.right;
+    const height = svgHeight - margin.top - margin.bottom;
+
+    const svg = d3.select("#chart-container")
+        .append("svg")
+        .attr("width", svgWidth)
+        .attr("height", svgHeight)
+        .append("g")
+        .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+
+    d3.csv("Book1.csv").then(data1 => {
+
+        var data = data1.filter(function(d) {
+            return d.wins > 60 ;
+        });
+
+
+        const xScale = d3.scaleBand()
+            .domain(data.map(d => d.teamName))
+            .range([0, width])
+            .padding(0.1);
+
+        const xAxis = d3.axisBottom(xScale);
+
+        const yScale = d3.scaleLinear()
+            .domain([0, 130])
+            .range([height, 0]);
+
+        const regionColors = d3.scaleOrdinal(d3.schemeCategory10)
+            .domain(data.map(d => d.region));
+
+
+        const bars = svg.selectAll(".bar")
+            .data(data)
+            .enter()
+            .append("rect")
+            .attr("class", "bar")
+            .attr("x", d => xScale(d.teamName))
+            .attr("y", d => yScale(d.wins))
+            .attr("width", xScale.bandwidth())
+            .attr("height", d => height - yScale(d.wins))
+            .attr("fill", d => regionColors(d.region))
+            .attr('id', 'bar')
+            .attr("id", 'g1')
+
+
+        const yAxis = d3.axisLeft(yScale);
+
+        svg.append("g")
+            .attr("class", "x-axis")
+            .attr("transform", `translate(0, ${height})`)
+            .attr("id", 'g1')
+            .call(xAxis)
+            .selectAll("text")
+            .style("text-anchor", "end")
+            .attr("transform", "rotate(-45)")
+            .attr("id", 'g1');
+
+        svg.append("g")
+            .attr("class", "y-axis")
+            .call(yAxis)
+            .attr("id", 'g1');
+
+
+        svg.append("text")
+            .attr("x", 75)
+            .attr("y", 50)
+            .attr("transform", "rotate(90)")
+            .style("text-anchor", "middle")
+            .text("Number of Wins")
+            .attr("id", 'g1');
+
+        const legend = svg.append("g")
+            .attr("class", "legend")
+            .attr("transform", `translate(${width + 10}, 20)`)
+            .attr("id", 'g1');
+
+        const regions = regionColors.domain();
+        const legendRectSize = 18;
+        const legendSpacing = 6;
+
+        const legendItems = legend.selectAll(".legend-item")
+            .data(regions)
+            .enter()
+            .append("g")
+            .attr("class", "legend-item")
+            .attr("transform", (d, i) => `translate(0, ${i * (legendRectSize + legendSpacing)})`)
+            .attr("id", 'leg');
+
+        legendItems.append("rect")
+            .attr("width", legendRectSize)
+            .attr("height", legendRectSize)
+            .attr("fill", d => regionColors(d))
+            .attr("id", 'leg');
+
+        legendItems.append("text")
+            .attr("x", legendRectSize + legendSpacing)
+            .attr("y", legendRectSize - legendSpacing)
+            .text(d => d)
+            .attr("id", 'leg');
+        let currentIndex = 0;
+        const regionColors2 = d3.scaleOrdinal(d3.schemeCategory10)
+            .domain(data.map(d => d.good));
+        function updateVisualization() {
+
+            if(currentIndex === 1){
+                const annotationX = 800;
+                const annotationY = 0;
+                const annotationText = "The first thing you may notice is that the winners are evenly dispersed through " + "\n the conferences but the top five teams win a lot more than others";
+                svg.select('#anno2').remove();
+                svg.append("text")
+                    .attr("id", 'anno')
+                    .attr("x", annotationX)
+                    .attr("y", annotationY)
+                    .text(annotationText)
+                    .attr("fill", "black")
+                    .attr("text-anchor", "middle")
+                    .attr("font-size", "14px")
+                    .attr("font-weight", "bold")
+                    ;
+
+
+            }
+            if(currentIndex === 2){
+                svg.select('#anno').remove();
+                svg.select('#anno3').remove();
+                svg.selectAll('#leg').remove();
+
+                bars.attr("fill", d => regionColors2(d.good))
+                const annotationX = 600;
+                const annotationY = 0;
+                const annotationText = "There are five really good teams these teams account for 8/10 last national championships";
+
+                const legend = svg.append("g")
+                    .attr("class", "legend")
+                    .attr("transform", `translate(${width + 10}, 20)`)
+                    .attr("id", 'g1');
+
+                const good = regionColors2.domain();
+                const legendRectSize = 18;
+                const legendSpacing = 6;
+
+
+                const legendItems = legend.selectAll(".legend-item")
+                    .data(good)
+                    .enter()
+                    .append("g")
+                    .attr("class", "legend-item")
+                    .attr("transform", (d, i) => `translate(0, ${i * (legendRectSize + legendSpacing)})`)
+                    .attr("id", 'leg');
+
+                legendItems.append("rect")
+                    .attr("width", legendRectSize)
+                    .attr("height", legendRectSize)
+                    .attr("fill", d => regionColors2(d))
+                    .attr("id", 'leg');
+
+                legendItems.append("text")
+                    .attr("x", legendRectSize + legendSpacing)
+                    .attr("y", legendRectSize - legendSpacing)
+                    .text(d => d)
+                    .attr("id", 'leg');
+
+                svg.append("text")
+                    .attr("id", 'anno2')
+                    .attr("x", annotationX)
+                    .attr("y", annotationY)
+                    .text(annotationText)
+                    .attr("fill", "black")
+                    .attr("text-anchor", "middle")
+                    .attr("font-size", "14px")
+                    .attr("font-weight", "bold")
+                ;
+            }
+
+            if(currentIndex === 3){
+                const regionColors3 = d3.scaleOrdinal(d3.schemeCategory10)
+                    .domain(data.map(d => d.won));
+                bars.attr("fill", d => regionColors3(d.won))
+                svg.select('#anno2').remove();
+                const annotationX = 400;
+                const annotationY = 15;
+                const annotationText = "With only two others who have joined them to achieve the top prize in college football";
+
+                svg.append("text")
+                    .attr("id", 'anno3')
+                    .attr("x", annotationX)
+                    .attr("y", annotationY)
+                    .text(annotationText)
+                    .attr("fill", "black")
+                    .attr("text-anchor", "middle")
+                    .attr("font-size", "14px")
+                    .attr("font-weight", "bold")
+                ;
+            }
+
+
+            if(currentIndex === 4) {
+                svg.selectAll('#g1').remove();
+                svg.selectAll('#anno3').remove();
+
+                d3.csv("Book2.csv").then(data => {
+
+                    const width = 300;
+                    const height = 300;
+
+                    const radius = Math.min(width, height) / 2;
+
+
+                    const centerX = width / 2;
+                    const centerY = height/ 2;
+
+
+                    const pie = d3.pie()
+                        .value(d => d.wins)
+                        .sort(null);
+
+
+                    const arc = d3.arc()
+                        .innerRadius(0)
+                        .outerRadius(radius);
+                    const outerArc = d3.arc()
+                        .innerRadius(radius * 0.8)
+                        .outerRadius(radius * 0.9);
+
+
+                    const pieChart = svg.append('g')
+                        .attr('transform', `translate(${centerX}, ${centerY})`)
+                        .attr("id", 'pie');
+
+
+                    const slices = pieChart.selectAll('path')
+                        .data(pie(data))
+                        .enter()
+                        .append('path')
+                        .attr('d', arc)
+                        .attr("id", 'piec')
+                        .attr('fill', d => regionColors(d));
+
+
+
+                    const labels = pieChart.selectAll('text')
+                        .data(pie(data))
+                        .enter()
+                        .append('text')
+                        .attr('transform', d => `translate(${arc.centroid(d)})`)
+                        .attr('dy', '0.35em')
+                        .text(d => d.data.region)
+                        .style('text-anchor', 'middle')
+                        .attr("id", 'pie');
+
+                    const annotationX = 400;
+                    const annotationY = 0;
+                    const annotationText = "This is pie chart of each conferences share of the total wins in college football";
+
+                    svg.append("text")
+                        .attr("id", 'anno4')
+                        .attr("x", annotationX)
+                        .attr("y", annotationY)
+                        .text(annotationText)
+                        .attr("fill", "black")
+                        .attr("text-anchor", "middle")
+                        .attr("font-size", "14px")
+                        .attr("font-weight", "bold")
+                    ;
+
+
+                });
+            }
+            if(currentIndex === 5){
+                svg.selectAll('#anno4').remove();
+                const annotationX = 400;
+                const annotationY = 0;
+                const annotationText = "Of course only the winners conferences ever produce champions";
+
+                svg.append("text")
+                    .attr("id", 'anno4')
+                    .attr("x", annotationX)
+                    .attr("y", annotationY)
+                    .text(annotationText)
+                    .attr("fill", "black")
+                    .attr("text-anchor", "middle")
+                    .attr("font-size", "14px")
+                    .attr("font-weight", "bold")
+
+                d3.csv("Book2.csv").then(data => {
+
+                    const colorScale = d3.scaleOrdinal()
+                        .domain(data.map(d => d.good))
+                        .range(d3.schemeCategory10);
+                const slices = d3.selectAll("#piec");
+
+                    slices.attr("fill", d => colorScale(d.data.good));
+
+                    const good = colorScale.domain();
+                    const legendRectSize = 18;
+                    const legendSpacing = 6;
+                    const legend = svg.append("g")
+                        .attr("class", "legend")
+                        .attr("transform", `translate(${width + 10}, 20)`)
+                        .attr("id", 'g1');
+
+
+                    const legendItems = legend.selectAll(".legend-item")
+                        .data(good)
+                        .enter()
+                        .append("g")
+                        .attr("class", "legend-item")
+                        .attr("transform", (d, i) => `translate(0, ${i * (legendRectSize + legendSpacing)})`)
+                        .attr("id", 'leg');
+
+                    legendItems.append("rect")
+                        .attr("width", legendRectSize)
+                        .attr("height", legendRectSize)
+                        .attr("fill", d => colorScale(d))
+                        .attr("id", 'leg');
+
+                    legendItems.append("text")
+                        .attr("x", legendRectSize + legendSpacing)
+                        .attr("y", legendRectSize - legendSpacing)
+                        .text(d => d)
+                        .attr("id", 'leg');
+
+
+            });}
+
+            if(currentIndex === 6){
+
+                // FIRST SCATTER PLOT
+                svg.selectAll('#g1').remove();
+                svg.selectAll('#pie').remove();
+                svg.selectAll('#leg').remove();
+                svg.selectAll('#anno4').remove();
+                const xScale = d3.scaleLinear()
+                    .domain([0, 1])
+                    .range([0, width]);
+
+                const yScale = d3.scaleLinear()
+                    .domain([50,130])
+                    .range([height, 0]);
+                const g = svg.append("g").attr("transform", `translate(${width / 2},${height / 2})`);
+                svg.selectAll("circle1")
+                    .data(data)
+                    .enter()
+                    .append("circle")
+                    .attr("cx", d => xScale(d.value))
+                    .attr("cy", d => yScale(d.wins))
+                    .attr("id", 'g2')
+                    .attr("r", 6)
+                    .attr("fill", d => regionColors(d.region));
+                const xAxis2 = d3.axisBottom(xScale);
+                const yAxis2 = d3.axisLeft(yScale);
+
+                svg.append("g")
+                    .attr("class", "x axis")
+                    .attr("transform", `translate(0, ${height})`)
+                    .attr("id", 'g2')
+                    .call(xAxis2);
+
+                svg.append("g")
+                    .attr("class", "y axis")
+                    .attr("id", 'g2')
+                    .call(yAxis2)
+                svg.append("text")
+                    .attr("x", width / 2)
+                    .attr("y", height + margin.top + 20)
+                    .style("text-anchor", "middle")
+                    .text("Recruiting Ranking Score");
+
+
+                svg.append("text")
+                    .attr("x", 75)
+                    .attr("y", 50)
+                    .attr("transform", "rotate(90)")
+                    .style("text-anchor", "middle")
+                    .text("Number of Wins")
+                    .attr("id", 'g1');
+                ;
+                const annotationX = 800;
+                const annotationY = 0;
+                const annotationText = "Only the top recuiring teams are able to win championships, you may now explore diffrent teams and their by hittingh next";
+
+                svg.append("text")
+                    .attr("x", annotationX)
+                    .attr("y", annotationY)
+                    .text(annotationText)
+                    .attr("fill", "black")
+                    .attr("text-anchor", "middle")
+                    .attr("font-size", "14px")
+                    .attr("font-weight", "bold")
+                ;
+
+            }
+
+            if(currentIndex === 6){
+                const regionColors2 = d3.scaleOrdinal(d3.schemeCategory10)
+                    .domain(data.map(d => d.won));
+                const circles = d3.selectAll("#g2");
+
+                const legend = svg.append("g")
+                    .attr("class", "legend")
+                    .attr("transform", `translate(${width + 10}, 20)`)
+                    .attr("id", 'g1');
+
+                circles.attr("fill", d => regionColors2(d.won));
+
+            }
+
+
+
+            //PIE CHAT
+            function drawPieChart(selectedData) {
+
+                svg.selectAll('#g2').remove();
+
+                var d2 = data1.filter(function(d) {
+                    return d.region === selectedData;
+                });
+
+                const xScale = d3.scaleLinear()
+                    .domain([0, 1])
+                    .range([0, width]);
+
+                const yScale = d3.scaleLinear()
+                    .domain([0, d3.max(d2, d2 => d2.wins)])
+                    .range([height, 0]);
+                const g = svg.append("g").attr("transform", `translate(${width / 2},${height / 2})`);
+                svg.selectAll("circle1")
+                    .data(d2)
+                    .enter()
+                    .append("circle")
+                    .attr("cx", d2 => xScale(d2.value))
+                    .attr("cy", d2 => yScale(d2.wins))
+                    .attr("id", 'g2')
+                    .attr("r", 5)
+                    .attr("fill", d2 => regionColors(d2.region));
+
+                svg.selectAll("text")
+                    .data(d2)
+                    .enter()
+                    .append("text")
+                    .text(d => d.teamName)
+                    .attr("x", d2 => xScale(d2.value))
+                    .attr("y", d2 => yScale(d2.wins))
+                    .attr("fill", "black")
+                    .attr("id", 'g2');
+
+
+                const xAxis2 = d3.axisBottom(xScale);
+                const yAxis2 = d3.axisLeft(yScale);
+
+                svg.append("g")
+                    .attr("class", "x axis")
+                    .attr("transform", `translate(0, ${height})`)
+                    .attr("id", 'g2')
+                    .call(xAxis2);
+
+                svg.append("g")
+                    .attr("class", "y axis")
+                    .attr("id", 'g2')
+                    .call(yAxis2)
+                ;
+                var try2 = data1.filter(function(d) {
+                    return d.region === selectedData;
+                });
+
+                group.selectAll("text")
+                    .data(data1)
+                    .enter()
+                    .append("text")
+                    .text(d => d.teamName)
+                    .attr("x", d => xScale(d.wins) + 8)
+                    .attr("y", d => yScale(d.value) - 8)
+                    .attr("fill", "black");
+
+
+            }
+            if(currentIndex === 7){
+
+                var container = document.getElementById("chart-container");
+
+
+                var select = document.createElement("select");
+                select.id = "dataSelect";
+
+                var option1 = document.createElement("option");
+                option1.value = "SEC";
+                option1.textContent = "SEC";
+                select.appendChild(option1);
+
+
+                var option2 = document.createElement("option");
+                option2.value = "ACC";
+                option2.textContent = "ACC";
+                select.appendChild(option2);
+
+                var option1 = document.createElement("option");
+                option1.value = "Big10";
+                option1.textContent = "Big10";
+                select.appendChild(option1);
+
+                var option1 = document.createElement("option");
+                option1.value = "Big12";
+                option1.textContent = "Big12";
+                select.appendChild(option1);
+
+                var option1 = document.createElement("option");
+                option1.value = "CUSA";
+                option1.textContent = "CUSA";
+                select.appendChild(option1);
+
+                var option1 = document.createElement("option");
+                option1.value = "IND";
+                option1.textContent = "IND";
+                select.appendChild(option1);
+
+                var option1 = document.createElement("option");
+                option1.value = "MNW";
+                option1.textContent = "MNW";
+                select.appendChild(option1);
+
+                var option1 = document.createElement("option");
+                option1.value = "PAC12";
+                option1.textContent = "Pac12";
+                select.appendChild(option1);
+
+                var option1 = document.createElement("option");
+                option1.value = "Sunbelt";
+                option1.textContent = "Sunbelt";
+                select.appendChild(option1);
+
+
+
+                container.appendChild(select);
+                d3.select("#dataSelect").on("change", function() {
+                    var selectedData = d3.select(this).property("value");
+                    drawPieChart(selectedData);
+                });
+
+            }
+
+
+        }
+
+
+        d3.select("#nextButton").on("click", () => {
+            currentIndex =  currentIndex + 1;
+            updateVisualization();
+        });
+
+    });
+</script>
+</body>
+</html>
