@@ -4,7 +4,7 @@
     <title>D3.js Bar Graph</title>
     <script src="https://d3js.org/d3.v7.js"></script>
 </head>
-<p>This is a narative visualtaion about who wins college football championships and why your team won't win one please click through the visulzation!</p>
+<p>This is a narrative visualization about who wins college football championships and why your team won't win one please click through the visualization. It has data from the last five years of D1 college football teams!</p>
 <button id="nextButton">Next</button>
 
 <body>
@@ -289,7 +289,7 @@
                 svg.selectAll('#anno4').remove();
                 const annotationX = 400;
                 const annotationY = 0;
-                const annotationText = "Of course only the winners conferences ever produce champions";
+                const annotationText = "Of course only the winningest conferences ever produce champions";
 
                 svg.append("text")
                     .attr("id", 'anno4')
@@ -395,9 +395,8 @@
                     .attr("id", 'g1');
                 ;
                 const annotationX = 800;
-                const annotationY = 0;
-                const annotationText = "Only the top recuiring teams are able to win championships, you may now explore diffrent teams and their by hittingh next";
-
+                const annotationY = -1;
+                const annotationText = "Only the top recruiting teams are able to win championships, you may now explore different teams and their by hitting next and selecting different conferences"
                 svg.append("text")
                     .attr("x", annotationX)
                     .attr("y", annotationY)
@@ -440,7 +439,7 @@
                     .range([0, width]);
 
                 const yScale = d3.scaleLinear()
-                    .domain([0, d3.max(d2, d2 => d2.wins)])
+                    .domain([0, 120])
                     .range([height, 0]);
                 const g = svg.append("g").attr("transform", `translate(${width / 2},${height / 2})`);
                 svg.selectAll("circle1")
@@ -478,18 +477,7 @@
                     .attr("id", 'g2')
                     .call(yAxis2)
                 ;
-                var try2 = data1.filter(function(d) {
-                    return d.region === selectedData;
-                });
 
-                group.selectAll("text")
-                    .data(data1)
-                    .enter()
-                    .append("text")
-                    .text(d => d.teamName)
-                    .attr("x", d => xScale(d.wins) + 8)
-                    .attr("y", d => yScale(d.value) - 8)
-                    .attr("fill", "black");
 
 
             }
@@ -554,12 +542,8 @@
                     var selectedData = d3.select(this).property("value");
                     drawPieChart(selectedData);
                 });
-
             }
-
-
         }
-
 
         d3.select("#nextButton").on("click", () => {
             currentIndex =  currentIndex + 1;

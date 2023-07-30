@@ -1,7 +1,7 @@
 ﻿teamName,wins,region,good,won,value
 Alabama,126,SEC,Champions ,Champions ,0.993
 Clemson,121,ACC,Champions ,Champions ,0.954
-Ohio State,116,Big10,Champions ,Champions ,0.965
+Ohio_State,116,Big10,Champions ,Champions ,0.965
 Georgia,109,SEC,Champions ,Champions ,0.993
 Oklahoma,103,Big12,Not Champions ,Not Champions ,0.967
 Not Champions tre Dame,94,IND,Not Champions ,Not Champions ,0.939
@@ -23,7 +23,7 @@ Florida State,82,ACC,Not Champions ,Champions ,0.938
 Washington,82,PAC12,Not Champions ,Not Champions ,0.909
 Louisiana,82,Sunbelt,Not Champions ,Not Champions ,0.521
 Memphis,81,AAC,Not Champions ,Not Champions ,0.427
-Michigan State,81,Big12,Not Champions ,Not Champions ,0.759
+Michigan State,81,Big10,Not Champions ,Not Champions ,0.759
 BYU,81,IND,Not Champions ,Not Champions ,0.352
 USC,81,PAC12,Not Champions ,Not Champions ,0.93
 Houston,80,AAC,Not Champions ,Not Champions ,0.354
